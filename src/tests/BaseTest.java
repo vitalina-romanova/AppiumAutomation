@@ -14,8 +14,8 @@ public class BaseTest {
         driver = DriverUtil.getDiver();
     }
 
-    @After
-    public void tearDown(){
-        driver.quit();
-    }
+//    @After
+//    public void tearDown(){
+//        driver.quit();
+//    }
 }
