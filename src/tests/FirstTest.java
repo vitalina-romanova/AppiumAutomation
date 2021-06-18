@@ -6,6 +6,7 @@ import helpers.Waiters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 
 public class FirstTest extends BaseTest{
@@ -279,6 +280,89 @@ public class FirstTest extends BaseTest{
         asserts.assertElementNotPresent(
                 By.xpath(searchResultLocator),
                 "error message"
+        );
+    }
+
+    @Test
+    public void testChangeScreenOrientationOnSearchResults() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        String searchLine = "Java";
+        waiters.waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searchLine,
+                "Cannot find search input",
+                5
+        );
+
+        waiters.waitForElementAndClick(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot find 'Object-oriented programming language'",
+                15
+        );
+
+        String titleBeforeRotation = waiters.waitForElementAndAttribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "error_message",
+                15
+        );
+
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        String titleAfterRotation = waiters.waitForElementAndAttribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "error_message",
+                15
+        );
+
+        Assert.assertEquals(titleBeforeRotation, titleAfterRotation);
+
+        driver.rotate(ScreenOrientation.PORTRAIT);
+
+        String titleAfterSecondRotation = waiters.waitForElementAndAttribute(
+                By.id("org.wikipedia:id/view_page_title_text"),
+                "text",
+                "error_message",
+                15
+        );
+
+        Assert.assertEquals(titleBeforeRotation, titleAfterSecondRotation);
+    }
+
+    @Test
+    public void testCheckSearchArticleInBackground() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        String searchLine = "Java";
+        waiters.waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searchLine,
+                "Cannot find search input",
+                5
+        );
+
+        waiters.waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot find article 'Object-oriented programming language'",
+                5
+        );
+
+        driver.runAppInBackground(2);
+
+        waiters.waitForElementPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='Object-oriented programming language']"),
+                "Cannot find article after background",
+                5
         );
     }
 }

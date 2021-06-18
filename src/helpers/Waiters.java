@@ -40,9 +40,15 @@ public class Waiters {
                 ExpectedConditions.invisibilityOfElementLocated(by)
         );
     }
+
     public WebElement waitForElementAndClear(By by, String error_message, long timeoutInSeconds ) throws Exception {
         WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
         element.clear();
         return element;
+    }
+
+    public String waitForElementAndAttribute(By by, String attribute, String error_message, long timeoutInSeconds) throws Exception {
+        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+        return element.getAttribute(attribute);
     }
 }
