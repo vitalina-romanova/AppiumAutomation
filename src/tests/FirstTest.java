@@ -1,5 +1,6 @@
 package tests;
 
+import helpers.Asserts;
 import helpers.Swipe;
 import helpers.Waiters;
 import org.junit.Assert;
@@ -7,11 +8,11 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-
 public class FirstTest extends BaseTest{
 
     Waiters waiters = new Waiters();
     Swipe swipe = new Swipe();
+    Asserts asserts = new Asserts();
 
     @Test
     public void firstTest() throws Exception {
@@ -34,6 +35,7 @@ public class FirstTest extends BaseTest{
                 "Cannot find 'Object-oriented programming language' topic searching by 'Java'",
                 15
         );
+
         waiters.waitForElementAndClear(
                 By.id("org.wikipedia:id/search_src_text"),
                 "Cannot find search_src_text",
@@ -54,6 +56,7 @@ public class FirstTest extends BaseTest{
                 "Cannot find X to cancel search",
                 5
         );
+
         waiters.waitForElementNotPresent(
                 By.id("org.wikipedia:id/search_close_btn"),
                 "X is still present on the page",
@@ -217,11 +220,65 @@ public class FirstTest extends BaseTest{
                 "Cannot find saved article"
         );
 
-
         waiters.waitForElementNotPresent(
                 By.xpath("//*[@text='Java (programming language)']"),
                 "Cannot delete saved article",
                 5
+        );
+    }
+
+    @Test
+    public void testAmountOfNotEmptySearch() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        String searchLine = "linkin park discography";
+        waiters.waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searchLine,
+                "Cannot find search input",
+                5
+        );
+
+        String searchResultLocator = "//*[@resource-id='org.wikipedia:id/fragment_feed_feed']//*[@resource-id='org.wikipedia:id/search_container']";
+        waiters.waitForElementPresent(By.xpath(searchResultLocator),
+                "Cannot find anything by the request " + searchLine);
+
+        int amountOfSearchResults = asserts.getAmountOfElement(
+                By.xpath(searchResultLocator)
+        );
+        Assert.assertTrue(amountOfSearchResults > 0);
+    }
+
+    @Test
+    public void testAmountOfEmptySearch() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath("//*[contains(@text, 'Search Wikipedia')]"),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        String searchLine = "zzzz2dd2dddr3r2";
+        waiters.waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                searchLine,
+                "Cannot find search input",
+                5
+        );
+
+        String searchResultLocator = "//*[@resource-id='org.wikipedia:id/fragment_feed_feed']//*[@resource-id='org.wikipedia:id/search_container']";
+        String emptyResultLabel = "//*[@text='No results found']";
+
+        waiters.waitForElementPresent(
+                By.xpath(emptyResultLabel),
+                "Cannot find empty result label by the request " + searchLine);
+
+        asserts.assertElementNotPresent(
+                By.xpath(searchResultLocator),
+                "error message"
         );
     }
 }
