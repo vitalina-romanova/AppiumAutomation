@@ -1,5 +1,6 @@
 package tests;
 
+import helpers.Asserts;
 import helpers.Swipe;
 import helpers.Waiters;
 import org.junit.Assert;
@@ -32,6 +33,7 @@ public class HomeworkEx4Tests extends BaseTest {
 
     Waiters waiters = new Waiters();
     Swipe swipe = new Swipe();
+    Asserts asserts = new Asserts();
 
     @Test
     public void saveArticleTest() throws Exception {
@@ -194,6 +196,32 @@ public class HomeworkEx4Tests extends BaseTest {
         );
 
         Assert.assertEquals(articleOnList, articleTitle);
+    }
+
+    @Test
+    public void assertTitleTest() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath(SEARCH_WIKIPEDIA),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        waiters.waitForElementAndSendKeys(
+                By.xpath(SEARCH),
+                ARTICLE_ONE,
+                "Cannot find search input",
+                5
+        );
+
+        waiters.waitForElementAndClick(
+                By.xpath(ITEM_OBJECT_ORIENTED),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+
+        asserts.assertElementPresent(By.id(TITLE_TEXT),
+        "Cannot find title"
+        );
     }
 }
 

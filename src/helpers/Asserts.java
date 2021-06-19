@@ -27,11 +27,19 @@ public class Asserts {
         List elements = driver.findElements(by);
         return elements.size();
     }
-    public void assertElementNotPresent(By by,String error_message) throws Exception {
+    public void assertElementNotPresent(By by, String error_message) throws Exception {
         int amountOfElements = getAmountOfElement(by);
         if (amountOfElements > 0){
             String defaultMessage = "An element " + by.toString() + " supposed to be present ";
-            throw new AssertionError(defaultMessage + "" + error_message);
+            throw new AssertionError(defaultMessage + " " + error_message);
+        }
+    }
+
+    public void assertElementPresent(By by, String error_message) throws Exception {
+        int amountOfElements = getAmountOfElement(by);
+        if (amountOfElements < 1){
+            String defaultMessage = "An element " + by.toString() + " is not present ";
+            throw new AssertionError(defaultMessage + " " + error_message);
         }
     }
 }
