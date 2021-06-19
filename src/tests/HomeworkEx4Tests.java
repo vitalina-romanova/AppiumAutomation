@@ -6,6 +6,7 @@ import helpers.Waiters;
 import org.junit.Assert;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 
 public class HomeworkEx4Tests extends BaseTest {
 
@@ -222,6 +223,22 @@ public class HomeworkEx4Tests extends BaseTest {
         asserts.assertElementPresent(By.id(TITLE_TEXT),
         "Cannot find title"
         );
+
+        waiters.waitForElementAndClick(
+                By.xpath(NAVIGATE_UP),
+                "Cannot close article, cannot find X",
+                5
+        );
+    }
+
+    @Test
+    public void screenRotationTest() throws Exception {
+        waiters.waitForElementAndClick(
+                By.xpath(SEARCH_WIKIPEDIA),
+                "Cannot find Search Wikipedia input",
+                5
+        );
+        driver.rotate(ScreenOrientation.LANDSCAPE);
     }
 }
 
